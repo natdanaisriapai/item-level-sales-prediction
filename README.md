@@ -49,7 +49,14 @@ The dataset includes:
    * Primary model: LightGBM Regressor
    * Additional models: RandomForest and GradientBoosting for comparison
    * Time series cross-validation with 5 folds
-   * Hyperparameter optimization using grid search
+   * Hyperparameter optimization using grid search in batches:
+     * Process parameters in small batches (10 combinations per batch)
+     * Save intermediate results after each batch
+     * Benefits:
+       - Reduces memory usage during optimization
+       - Allows for checkpoint recovery if process is interrupted
+       - More efficient for large parameter spaces
+       - Enables monitoring of optimization progress
 
 3. **Evaluation Metrics**
    * RMSE (Root Mean Square Error)
@@ -82,7 +89,7 @@ jupyter notebook
 ## Model Performance
 
 The LightGBM model demonstrates strong performance with:
-* Cross-validation to ensure robust predictions
+* Time Series Cross-validation to ensure robust predictions
 * Separate test set evaluation
 * Store-item level accuracy analysis
 
