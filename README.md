@@ -1,74 +1,108 @@
-# test1.ipynb - Item-Level Sales Prediction Notebook
-## โน้ตบุ๊คสำหรับการทำนายยอดขายรายสินค้าและการวิเคราะห์ผล
+# Item-Level Sales Prediction
 
-### 📋 วัตถุประสงค์
-- ทดลองใช้โมเดลหลายตัวในการทำนายยอดขาย (LightGBM, Random Forest, Gradient Boosting)
-- สร้าง Ensemble Model จากโมเดลที่ดีที่สุด
-- วิเคราะห์และเปรียบเทียบประสิทธิภาพของแต่ละโมเดล
-- แสดงผลการทำนายในรูปแบบกราฟที่เข้าใจง่าย
+This project implements a machine learning solution for predicting item-level sales across multiple stores. It uses historical sales data to forecast future sales for each store-item combination.
 
-### 🔄 ขั้นตอนการทำงาน
-1. **Data Loading & Preprocessing**
-   - โหลดข้อมูลจาก train.csv และ test.csv
-   - แปลงข้อมูลวันที่เป็น datetime
-   - สร้าง features ใหม่ (ปี, เดือน, วัน, วันในสัปดาห์)
-   - สร้าง lag features (7, 14, 30 วัน)
-   - สร้าง rolling mean features
+## Setup
+
+1. Create and activate a virtual environment:
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Linux/Mac
+python -m venv venv
+source venv/bin/activate
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Project Structure
+```
+item-level sales prediction/
+├── data/
+│   ├── test.csv        # Test dataset for predictions
+│   └── train.csv       # Training dataset with historical sales
+├── main.ipynb          # Main notebook containing analysis and model
+└── requirements.txt    # Python package dependencies
+```
+
+## Data Description
+
+The dataset includes:
+* Daily sales data for multiple stores and items
+* Features: date, store, item, sales
+* Training period: 2013-2017
+* Prediction target: 3 months ahead (2018 Q1)
+
+## Methodology
+
+1. **Feature Engineering**
+   * Time-based features (year, month, day, day_of_week, quarter)
+   * Store and item encoding
+   * No lag features to maintain simplicity and reduce data leakage
 
 2. **Model Training**
-   - แบ่งข้อมูลเป็น train, validation, test (45,000 records for validation and test)
-   - เทรนโมเดล 3 ตัว:
-     * LightGBM
-     * Random Forest
-     * Gradient Boosting
-   - สร้าง Ensemble Model โดยใช้ weighted average ตาม R² score
+   * Primary model: LightGBM Regressor
+   * Additional models: RandomForest and GradientBoosting for comparison
+   * Time series cross-validation with 5 folds
+   * Hyperparameter optimization using grid search
 
-3. **Prediction Generation**
-   - ทำนายยอดขาย 3 เดือนข้างหน้า
-   - คำนวณ lag features แบบ rolling
-   - ใช้ทั้ง individual models และ ensemble model
+3. **Evaluation Metrics**
+   * RMSE (Root Mean Square Error)
+   * MAE (Mean Absolute Error)
+   * R² Score
 
 4. **Visualization**
-   - แสดงกราฟเปรียบเทียบ Actual vs Predicted Sales
-   - แยกแสดงผลการทำนายของแต่ละโมเดล
-   - วิเคราะห์ top 3 store-item combinations
+   * Overall sales trends
+   * Store-item specific predictions
+   * Model performance comparisons
 
-### 📊 การแสดงผล
-- **กราฟหลัก**: แสดงยอดขายรวมทุกสาขาและสินค้า
-  * เส้นสีน้ำเงิน: ยอดขายจริง
-  * เส้นประสีแดง: Ensemble Prediction
-  * เส้นจุดสีเขียว: LightGBM Prediction
-  * เส้นจุดสีส้ม: Random Forest Prediction
-  * เส้นจุดสีม่วง: Gradient Boosting Prediction
+## Usage
 
-- **กราฟรายสินค้า**: แสดงยอดขายแยกตาม store-item combinations ที่มียอดขายสูงสุด 3 อันดับแรก
+1. Open and run `main.ipynb` in Jupyter Notebook/Lab:
+```bash
+jupyter notebook
+```
 
-### 📈 Model Weights
-- แสดงน้ำหนักของแต่ละโมเดลใน Ensemble
-- คำนวณจาก R² score ของแต่ละโมเดล
-- แสดงเป็นเปอร์เซ็นต์
+2. The notebook is structured in sections:
+   * Data Loading and Exploration
+   * Feature Engineering
+   * Model Training and Evaluation
+   * Predictions and Visualization
 
-### 🔧 การใช้งาน
-1. ตรวจสอบว่ามีไฟล์ข้อมูลครบ:
-   - train.csv
-   - test.csv
-   - best_model_LightGBM.joblib
-   - feature_scaler.joblib
+3. Results include:
+   * Model performance metrics
+   * Visualizations of actual vs predicted sales
+   * Future sales predictions for each store-item combination
 
-2. ติดตั้ง dependencies:
-   ```bash
-   pip install -r requirement.txt
-   ```
+## Model Performance
 
-3. รัน notebook ทั้งหมดเพื่อดูผลการวิเคราะห์
+The LightGBM model demonstrates strong performance with:
+* Cross-validation to ensure robust predictions
+* Separate test set evaluation
+* Store-item level accuracy analysis
 
-### 📝 หมายเหตุ
-- การทำนายใช้ข้อมูล lag 30 วันล่าสุด
-- ถ้าไม่มีข้อมูล lag จะใช้ค่าเฉลี่ยของ store-item combination นั้นๆ แทน
-- สามารถปรับ hyperparameters ของแต่ละโมเดลได้ตามต้องการ
-- กราฟสามารถ zoom และ pan เพื่อดูรายละเอียดได้
+## Future Improvements
 
-### ⚠️ ข้อควรระวัง
-- ต้องมี RAM เพียงพอสำหรับการโหลดและประมวลผลข้อมูล
-- การรันอาจใช้เวลานานขึ้นอยู่กับขนาดของข้อมูลและสเปคเครื่อง
-- ควรตรวจสอบ lag features ว่ามีข้อมูลเพียงพอก่อนการทำนาย
+Potential enhancements:
+1. Add seasonal features
+2. Implement advanced time series techniques
+3. Incorporate external factors (holidays, promotions, etc.)
+4. Ensemble multiple models
+5. Add feature importance analysis
+
+## Requirements
+
+Key dependencies:
+* pandas
+* numpy
+* scikit-learn
+* lightgbm
+* matplotlib
+* seaborn
+
+See `requirements.txt` for complete list. 
