@@ -26,7 +26,12 @@ item-level sales prediction/
 ├── data/
 │   ├── test.csv        # Test dataset for predictions
 │   └── train.csv       # Training dataset with historical sales
+├── utils.py            # Utility functions for model training
 ├── main.ipynb          # Main notebook containing analysis and model
+├── model_checkpoints/  # Saved model checkpoints from batch training
+│   ├── LightGBM_batch_*.pkl
+│   ├── RandomForest_batch_*.pkl
+│   └── GradientBoosting_batch_*.pkl
 └── requirements.txt    # Python package dependencies
 ```
 
@@ -46,12 +51,15 @@ The dataset includes:
    * No lag features to maintain simplicity and reduce data leakage
 
 2. **Model Training**
-   * Primary model: LightGBM Regressor
-   * Additional models: RandomForest and GradientBoosting for comparison
+   * Multiple models implemented:
+     * LightGBM Regressor (primary model)
+     * Random Forest Regressor
+     * Gradient Boosting Regressor
    * Time series cross-validation with 5 folds
-   * Hyperparameter optimization using grid search in batches:
+   * Hyperparameter optimization using batched grid search:
      * Process parameters in small batches (10 combinations per batch)
      * Save intermediate results after each batch
+     * Early stopping for LightGBM (50 rounds)
      * Benefits:
        - Reduces memory usage during optimization
        - Allows for checkpoint recovery if process is interrupted
@@ -62,6 +70,7 @@ The dataset includes:
    * RMSE (Root Mean Square Error)
    * MAE (Mean Absolute Error)
    * R² Score
+   * Cross-validation scores with standard deviation
 
 4. **Visualization**
    * Overall sales trends
@@ -104,6 +113,8 @@ Potential enhancements:
 
 ## Requirements
 
+Python version: 3.12
+
 Key dependencies:
 * pandas
 * numpy
@@ -113,3 +124,7 @@ Key dependencies:
 * seaborn
 
 See `requirements.txt` for complete list. 
+
+__________________________________________________________________________________________________________________
+
+For any questions or issues, please contact [natdanai.sriapai@gmail.com](natdanai.sriapai@gmail.com).
