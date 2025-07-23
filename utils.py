@@ -143,7 +143,7 @@ def train_and_evaluate_models_batch(
                         est = Est(**params)
                         est.fit(X_tr, y_tr)
                         pred = est.predict(X_va)
-                        # ไม่มี concept best iteration
+                        # No concept of best iteration for non-LightGBM models
                         del est
 
                     mse = mean_squared_error(y_va, pred)
@@ -204,7 +204,7 @@ def train_and_evaluate_models_batch(
         # retrain on full train
         final_params = dict(best_params)
         if model_name == 'LightGBM':
-            # ใช้ best_iter (ถ้าพบ) เพื่อจำกัด n_estimators
+            # Use best_iter (if found) to limit n_estimators
             if best_iter is not None:
                 final_params['n_estimators'] = best_iter
             final_params['verbosity'] = -1
