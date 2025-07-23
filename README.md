@@ -26,12 +26,12 @@ item-level sales prediction/
 ├── data/
 │   ├── test.csv        # Test dataset for predictions
 │   └── train.csv       # Training dataset with historical sales
-├── utils.py            # Utility functions for model training
-├── main.ipynb          # Main notebook containing analysis and model
 ├── model_checkpoints/  # Saved model checkpoints from batch training
 │   ├── LightGBM_batch_*.pkl
 │   ├── RandomForest_batch_*.pkl
 │   └── GradientBoosting_batch_*.pkl
+├── main.ipynb          # Main notebook containing analysis and model
+├── utils.py            # Utility functions for model training
 └── requirements.txt    # Python package dependencies
 ```
 
@@ -70,8 +70,7 @@ The dataset includes:
    * RMSE (Root Mean Square Error)
    * MAE (Mean Absolute Error)
    * R² Score
-   * Cross-validation scores with standard deviation
-
+   * Cross-validation scores (RMSE)
 4. **Visualization**
    * Overall sales trends
    * Store-item specific predictions
